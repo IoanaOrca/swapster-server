@@ -3,7 +3,7 @@ const Schema   = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 const itemSchema = new Schema({
-  name: String,
+  title: String,
   price: Number,
   description: String,
   owner: {
@@ -15,9 +15,9 @@ const itemSchema = new Schema({
     ref: 'User'
   }],
 
-  sold:boolean
+  sold:Boolean
 });
 
-const Item = mongoose.model("Movie", movieSchema);
+const Item = mongoose.model("Item", itemSchema);
 
-module.exports = Movie;
+module.exports = Item;
