@@ -3,17 +3,19 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-
 const Item = require('../models/item')
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  Item.find ({})
-  .then((result) => {
-    res.json(result)
-  })
-  .catch(next)
-});
+// router.get('/', (req, res, next) => {
+//   const criteria = {};
+//   if (req.query.terms) {
+//     criteria['$regexp'] = terms
+//   }
+//   Item.find (criteria)
+//   .then((result) => {
+//     res.json(result)
+//   })
+//   .catch(next)
+// });
 
 router.post('/', (req, res, next) => {
   const title = req.body.title;
