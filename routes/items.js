@@ -37,6 +37,9 @@ router.post('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   Item.findById (req.params.id)
   .then((result) => {
+    if (!result) {
+      return res.status(404).json({code: 'not-found'});
+    }
     res.json(result)
   })
   .catch(next)
@@ -80,29 +83,44 @@ router.get('/:id', (req, res, next) => {
 // });
 
 
-// router.delete('/:id', (req, res, next) =>{
+router.delete('/:id', (req, res, next) =>{
 
-// // if not mongoose type
-// if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
-//   return res.status(422).json({code : 'unprocessable-entity'})
-// }
+// if not mongoose type
+if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
+  return res.status(422).json({code : 'unprocessable-entity'})
+}
 
-//   //if there is no movie with this id
-//   Movie.findById(req.params.id)
-//   .then((result) => {
-//     if(!result) {
-//       return res.status(404).json({code: 'not-found'});
-//     }
-    
-//     result.remove()
-//     .then(()=> {
-//       res.json(result);
-//     })
-//     .catch(next);
-//   })
-//   .catch(next)
-// });
+  //if there is no movie with this id
+  Item.findById(req.params.id)
+    .then((result) => {
+      if(!result) {
+        return res.status(404).json({code: 'not-found'});
+      }
+      
+      return result.remove()
+        .then(()=> {
+          res.json(result);
+        })
+  })
+  .catch(next)
+});
 
+router.put('/:id/apply', (req, res, next) => {
 
+  // if not mongoose type
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
+    return res.status(422).json({code : 'unprocessable-entity'})
+  }
+
+  //update the new one from mogoose --without user experience
+  Item.updateOne({_id: req.params.id}, { $push: { applicants: req.session.currentUser } })
+    .then((result) => {
+      if (!result.nModified) {
+        return res.status(404).json({code: 'not-found'});
+      }
+      res.status(204).send();
+    })
+    .catch(next);
+});
 
 module.exports = router;
