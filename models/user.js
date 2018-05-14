@@ -6,8 +6,12 @@ const userSchema = new Schema({
   username: String,
   password: String,
   reviews: {
-    rating : Number,
-    description: String
+    type: [{
+      rating: Number,
+      description: String,
+      _id: false
+    }],
+    default: []
   },
   ItemsAcceptedFromOthers: [{
     type: ObjectId,

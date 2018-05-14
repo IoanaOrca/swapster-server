@@ -20,8 +20,43 @@ router.get('/:id', (req, res, next) => {
   .catch(next)
 });
 
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
+router.post('/:id/reviews', (req, res, next) => {
+  const rating = req.body.rating;
+  const description = req.body.description;
+  const userId = req.params.id;
+  
+  if (!rating || !description){
+    return res.status(422).json({code: 'unprocessable-entity'});
+  }
 
+  const newData = {
+    rating,
+    description
+  };
+
+  User.findById(userId)
+  .then((result) => {
+    // check if there is a user with this id
+
+    result.reviews.push(newData)
+
+    return result.save()
+  })
+  .then(() => {
+    res.status(201).json({_id: userId});
+  })
+  .catch(next);
+});
+
+router.get('/:id/requests', (req, res, next) => {
+  Item.find({owner:req.params.id})
+  .populate('applicants')
+   .then((result) => {
+     if (!result) {
+       return res.status(404).json({code: 'not-found'});
+     }
+     res.json(result)
+   })
+   .catch(next)
+ });
 module.exports = router;

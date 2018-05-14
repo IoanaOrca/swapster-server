@@ -5,6 +5,10 @@ const ObjectId = Schema.Types.ObjectId;
 const itemSchema = new Schema({
   title: String,
   price: Number,
+  image: {
+    type:String,
+    default:'https://www.irrigationlistings.com/img/placeholder.png'
+  },
   description: String,
   owner: {
     type: ObjectId,

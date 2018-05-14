@@ -6,13 +6,7 @@ const mongoose = require('mongoose');
 const Item = require('../models/item')
 
 router.get('/', (req, res, next) => {
-  const criteria = {};
-  if (req.query.terms) {
-    criteria['$regexp'] = req.query.terms;
-    criteria['$options'] = 'i';
-    console.log(criteria);
-  }
-  Item.find({title:criteria})
+  Item.find({title:new RegExp(req.query.terms, 'i')})
   .then((result) => {
     res.json(result)
   })
@@ -34,7 +28,7 @@ router.post('/', (req, res, next) => {
 
   newItem.save()
   .then((result) => {
-    res.status(201).json({code: 'okey'})
+    res.status(201).json(result)
   })
   .catch(next);
 });
@@ -67,7 +61,7 @@ if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
   const options ={
     new: true
   }
-  //if there is no movie with this id
+  //if there is no item with this id
   Item.findById(req.params.id)
   .then((result) => {
     if(!result) {
@@ -128,4 +122,21 @@ router.put('/:id/apply', (req, res, next) => {
     .catch(next);
 });
 
+router.put('/:id/sell', (req, res, next) => {
+
+  // if not mongoose type
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
+    return res.status(422).json({code : 'unprocessable-entity'})
+  }
+
+  //update the new one from mogoose --without user experience
+  Item.updateOne({_id: req.params.id}, { sold: true })
+    .then((result) => {
+      if (!result.nModified) {
+        return res.status(404).json({code: 'not-found'});
+      }
+      res.status(204).send();
+    })
+    .catch(next);
+});
 module.exports = router;
