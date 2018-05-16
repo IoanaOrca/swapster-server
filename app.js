@@ -5,6 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -18,12 +19,13 @@ const app = express();
 
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:4200']
+  // origin: ['http://localhost:4200']
+  origin: [process.env.CLIENT_URL]
 }));
 
 //mongoose promise
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/swapster', {
+mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
   reconnectTries: Number.MAX_VALUE
 });
