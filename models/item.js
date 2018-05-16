@@ -7,7 +7,7 @@ const itemSchema = new Schema({
   price: Number,
   image: {
     type:String,
-    default:'https://media.domu.co.uk/catalog/product/cache/1/image/1000x/9df78eab33525d08d6e5fb8d27136e95/v/o/vonshef_juicer_1.jpg'
+    default:'https://cdn.shopify.com/s/files/1/2038/6329/products/product-image-341848880_grande.jpg?v=1501242496'
   },
   description: String,
   owner: {
