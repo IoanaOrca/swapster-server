@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const Item = require('../models/item')
 
 router.get('/', (req, res, next) => {
-  Item.find({title:new RegExp(req.query.terms, 'i')})
+  Item.find({title:new RegExp(req.query.terms, 'i'),sold:false})
   .then((result) => {
     res.json(result)
   })
@@ -110,8 +110,7 @@ router.put('/:id/apply', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))  {
     return res.status(422).json({code : 'unprocessable-entity'})
   }
-
-  //update the new one from mogoose --without user experience
+  
   Item.updateOne({_id: req.params.id}, { $push: { applicants: req.session.currentUser } })
     .then((result) => {
       if (!result.nModified) {
@@ -120,7 +119,11 @@ router.put('/:id/apply', (req, res, next) => {
       res.status(204).send();
     })
     .catch(next);
-});
+    
+  })
+
+  
+
 
 router.put('/:id/sell', (req, res, next) => {
 

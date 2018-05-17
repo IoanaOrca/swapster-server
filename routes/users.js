@@ -9,8 +9,10 @@ const Item = require('../models/item')
 
 router.get('/:id', (req, res, next) => {
   const userPromise=User.findById(req.params.id)
-  const itemsPromise=Item.find({ owner: req.params.id })
-  Promise.all([userPromise,itemsPromise])
+  const itemsPromise=Item.find({ owner: req.params.id ,sold:false})
+  const itemsApplied=Item.find({applicants:req.params.id, sold: true})
+  const itemsBooked=Item.find({applicants:req.params.id, sold: false})
+  Promise.all([userPromise,itemsPromise,itemsApplied,itemsBooked])
   .then((result) => {
     if (!result) {
       return res.status(404).json({code: 'not-found'});
@@ -49,7 +51,7 @@ router.post('/:id/reviews', (req, res, next) => {
 });
 
 router.get('/:id/requests', (req, res, next) => {
-  Item.find({owner:req.params.id})
+  Item.find({owner:req.params.id, sold: false})
   .populate('applicants')
    .then((result) => {
      if (!result) {
@@ -59,4 +61,18 @@ router.get('/:id/requests', (req, res, next) => {
    })
    .catch(next)
  });
+
+
+ router.get('/:id/itemsReceived', (req, res, next) => {
+   console.log(req.params.id);
+  Item.find({applicants:req.params.id, sold: false})
+   .then((result) => {
+     if (!result) {
+       return res.status(404).json({code: 'not-found'});
+     }
+     res.json(result)
+   })
+   .catch(next)
+ });
+
 module.exports = router;

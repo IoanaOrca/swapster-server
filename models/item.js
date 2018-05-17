@@ -7,7 +7,7 @@ const itemSchema = new Schema({
   price: Number,
   image: {
     type:String,
-    default:'https://cdn.shopify.com/s/files/1/2038/6329/products/product-image-341848880_grande.jpg?v=1501242496'
+    default:'https://d26hhearhq0yio.cloudfront.net/content/misterspex/produkte/grafiken/6685969_a2.jpg'
   },
   description: String,
   owner: {
